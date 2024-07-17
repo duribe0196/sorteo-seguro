@@ -21,7 +21,7 @@ const getRemainingDays = (endDate: string) => {
   const end = dayjs(endDate);
   const diffDays = end.diff(today, "day");
 
-  return `${diffDays > 1 ? "Quedan" : "Queda"} ${Math.floor(diffDays)}  ${Math.floor(diffDays) > 1 ? "días" : "día"} para el premio`;
+  return `🤩 ${diffDays > 1 ? "Quedan" : "Queda"} ${Math.floor(diffDays)}  ${Math.floor(diffDays) > 1 ? "días" : "día"} 🥳`;
 };
 
 export function RaffleCard(props: any) {
@@ -41,7 +41,10 @@ export function RaffleCard(props: any) {
       <Divider />
       <CardBody>
         <div className="flex flex-wrap w-full">
-          <div className="flex w-full md:w-1/2 flex-col items-center justify-center">
+          <Link
+            href={`raffles/${props.raffle._id}`}
+            className="flex w-full md:w-1/2 flex-col items-center justify-center"
+          >
             <Image
               src={"https://nextui.org/images/album-cover.png"}
               alt={`${props.raffle.raffleName} image`}
@@ -50,7 +53,7 @@ export function RaffleCard(props: any) {
               isBlurred
               isZoomed
             />
-          </div>
+          </Link>
 
           <div className="flex w-full md:w-1/2 flex-col items-center justify-center mt-2 md:mt-0 p-2">
             <Link href={`raffles/${props.raffle._id}`}>

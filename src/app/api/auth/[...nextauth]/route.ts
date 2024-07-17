@@ -5,10 +5,13 @@ import { createUser, findUser } from "@/lib/actions/users";
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string;
+      _id: string;
       email: string;
       name: string;
       role: string;
+      referrals: Array<any>;
+      image: string;
+      freeTickets: number;
     };
   }
 
@@ -29,10 +32,8 @@ const authOptions: AuthOptions = {
   callbacks: {
     async session({ session, token, user }) {
       if (session.user && session.user.email) {
-        const user: any = await findUser(session.user.email);
-        if (user && user.role === "admin") {
-          session.user.role = "admin";
-        }
+        const userFromDB: any = await findUser(session.user.email);
+        session.user = { ...session.user, ...userFromDB };
       } else {
         session.user.role = "user";
       }

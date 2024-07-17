@@ -26,7 +26,7 @@ export async function findUser(email: string) {
   try {
     const user = await UserModel.findOne({ email });
     if (user) {
-      return user;
+      return JSON.parse(JSON.stringify(user));
     } else {
       console.warn("No user found with email", email);
       return null;
