@@ -37,8 +37,6 @@ export const createRaffle = async (raffleInfo: any) => {
     const user = await getUser();
     raffleInfo.owner = user._id;
 
-    console.log(raffleInfo);
-
     const response = raffleValidationSchema.safeParse(raffleInfo);
     if (!response.success) {
       const { errors } = response.error;
@@ -262,7 +260,7 @@ export const deleteRaffle = async (raffleId: string) => {
       };
     }
 
-    if (raffle.owner !== user._id.toString()) {
+    if (raffle.owner.toString() !== user._id.toString()) {
       return {
         success: false,
         fail: true,

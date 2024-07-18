@@ -48,10 +48,7 @@ export function RafflesTable(props: any) {
   );
   return (
     <>
-      <Table
-        aria-label="Example table with dynamic content"
-        classNames={{ th: "bg-primary text-white" }}
-      >
+      <Table classNames={{ th: "bg-primary text-white" }}>
         <TableHeader columns={props.columns}>
           {(column: any) => (
             <TableColumn key={column.key}>{column.label}</TableColumn>

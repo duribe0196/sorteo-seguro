@@ -3,13 +3,14 @@
 import { User } from "next-auth";
 import { UserModel } from "@/lib/db/user";
 import connectToDB from "@/lib/db/connection";
+import { revalidatePath } from "next/cache";
 
 export async function createUser(user: User) {
   await connectToDB();
   try {
     const existingUser = await UserModel.findOne({ email: user.email });
     if (!existingUser) {
-      const newUser = new UserModel({ ...user });
+      const newUser = new UserModel({ ...user, freeTickets: 1, role: "user" });
       await newUser.save();
     } else {
       console.warn("User already exists with email", user.email);
@@ -68,27 +69,37 @@ export async function saveReferral(
     // Buscar el usuario que refiere por su email
     const referrer: any = await UserModel.findOne({ email: referrerEmail });
     if (!referrer) {
-      return { error: `Email ${referrerEmail} no existe` };
+      return {
+        message: `Email "${referrerEmail}" no existe en nuestra base de datos`,
+        fail: true,
+        success: false,
+      };
     }
 
     // Buscar el usuario referido por su email
     const referral: any = await UserModel.findOne({ email: referralEmail });
     if (!referral) {
-      return { error: `Email ${referralEmail} no existe` };
+      return {
+        message: `Email "${referralEmail}" no existe en nuestra base de datos`,
+        fail: true,
+        success: false,
+      };
     }
 
     if (!referrer.referrals.includes(referral._id)) {
       referrer.referrals.push(referral._id);
+      referrer.freeTickets = referrer.freeTickets + 1;
       await referrer.save();
     }
 
     referral.referredBy = referrer._id;
     await referral.save();
 
-    return { message: "Guardado correctamente" };
+    revalidatePath("/my-profile/referrals");
+    return { message: "Guardado correctamente", fail: false, success: true };
   } catch (e: any) {
     const error = `Error getting referrals, ${e.message}`;
     console.error(error);
-    return { error };
+    return { message: "Algo salió mal", fail: true, success: false };
   }
 }

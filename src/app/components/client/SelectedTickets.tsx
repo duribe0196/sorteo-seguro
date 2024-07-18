@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function SelectedTickets(props: any) {
   const { selectedTickets, deselectTicketById } = useSelectedTickets();
-  const [useFreeTickets, setUseFreeTickets] = useState(true);
+  const [useFreeTickets, setUseFreeTickets] = useState(false);
   const { data } = useSession();
   const freeTicketsCount = data?.user.freeTickets || 0;
 
@@ -81,7 +81,7 @@ export default function SelectedTickets(props: any) {
             <div>
               <h3 className="text-xl font-bold mb-4">Tickets gratis usados</h3>
               <ul className="flex flex-wrap mb-4 space-x-2">
-                {[].map((ticket: any) => (
+                {Array.from({ length: freeTicketsCount }).map((ticket: any) => (
                   <>Build here something to apply free tickets</>
                 ))}
               </ul>

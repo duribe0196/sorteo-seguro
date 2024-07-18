@@ -1,12 +1,13 @@
 "use client";
 
-import { createRaffle, deleteRaffle } from "@/lib/actions/raffles";
+import { createRaffle } from "@/lib/actions/raffles";
 import { Input } from "@nextui-org/input";
 import { RangeCalendar } from "@nextui-org/calendar";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { createRef, useEffect, useState } from "react";
 import { getRaffleInfoToCreate } from "@/lib/utils/formData";
 import { Button } from "@nextui-org/button";
+import { useRouter } from "next/navigation";
 
 export default function CreateRaffle() {
   const [startDate, setStartDate] = useState(today(getLocalTimeZone()));
@@ -14,6 +15,7 @@ export default function CreateRaffle() {
     today(getLocalTimeZone()).add({ months: 2 }),
   );
 
+  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -28,11 +30,13 @@ export default function CreateRaffle() {
     const response = await createRaffle(raffleInfo);
     if (response.fail) {
       setErrorMessage(response.message);
+      setIsSaving(false);
     } else {
       setResponseMessage(response.message);
       ref.current?.reset();
+      setIsSaving(false);
+      router.replace("/my-profile/raffles");
     }
-    setIsSaving(false);
   };
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import { DropdownStatus } from "@/app/components/client/DropdownStatus";
 import { deleteRaffle, updateRaffle } from "@/lib/actions/raffles";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
+import { parseDate } from "@internationalized/date";
 import { RangeCalendar } from "@nextui-org/calendar";
 import { useEffect, useState } from "react";
 import { extractRaffleInfoToUpdate } from "@/lib/utils/formData";
@@ -15,6 +15,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/modal";
+import { useRouter } from "next/navigation";
 
 const statuses = [
   {
@@ -42,6 +43,7 @@ export function UpdateRaffle(props: any) {
     props.raffle.endDate.toString().substring(0, 10),
   );
 
+  const router = useRouter();
   const [startDate, setStartDate] = useState(parsedStartDate);
   const [endDate, setEndDate] = useState(parsedEndDate);
   const [errorMessage, setErrorMessage] = useState("");
@@ -69,6 +71,9 @@ export function UpdateRaffle(props: any) {
       setErrorMessage(response.message);
     }
     setIsRemoving(false);
+    if (response.success) {
+      router.replace("/my-profile/raffles");
+    }
   };
 
   useEffect(() => {
