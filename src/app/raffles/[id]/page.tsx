@@ -7,6 +7,8 @@ import SelectedTickets from "@/app/components/client/SelectedTickets";
 import { SelectedTicketsProvider } from "@/app/components/client/SelectedTicketsContext";
 import { getRaffleById } from "@/lib/actions/raffles";
 import { RaffleDescriptionTable } from "@/app/components/client/RaffleDescriptionTable";
+import { TbReport } from "react-icons/tb";
+import GoTo from "@/app/components/client/GoTo";
 
 export default async function Page({ searchParams, params }: any) {
   let page = parseInt(searchParams.page, 10);
@@ -22,8 +24,13 @@ export default async function Page({ searchParams, params }: any) {
       <div className="mt-2 flex items-center text-sm text-gray-500">
         <GoBack />
       </div>
-      <div className="mt-2 flex items-center text-sm text-gray-500">
+      <div className="mt-2 flex items-center flex-col text-sm text-gray-500">
         <RaffleDescriptionTable raffle={raffle} />
+        <GoTo
+          endContent={<TbReport size={30} />}
+          goTo={"iterations"}
+          text={"Ver historial"}
+        />
       </div>
 
       <div className={"mt-2"}>

@@ -95,7 +95,7 @@ export default function SelectedTickets(props: any) {
           {selectedTickets.length > 0 ? (
             <div className={"mt-2"}>
               <Button
-                className="px-4 py-2 text-white rounded-md"
+                className="px-4 py-2 text-black rounded-md"
                 onClick={handlePayment}
                 color={"primary"}
                 disabled={isPaymentDisabled}

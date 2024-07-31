@@ -1,6 +1,7 @@
 "use client";
+
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Chip } from "@nextui-org/chip";
 
 export default function Pagination(props: any) {
