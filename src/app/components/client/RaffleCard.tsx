@@ -6,15 +6,7 @@ import { Image } from "@nextui-org/image";
 import dayjs from "dayjs";
 import { Divider } from "@nextui-org/divider";
 import Link from "next/link";
-
-const formatToCOP = (value: number): string => {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value);
-};
+import { formatToCOP } from "@/lib/utils/currency";
 
 const getRemainingDays = (endDate: string) => {
   const today = dayjs();

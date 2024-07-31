@@ -43,7 +43,7 @@ const TicketsGrid: React.FC<any> = (props) => {
         isDisabled={isAuthenticated}
         content={"Debes ser un usuario registrado para poder comprar tickets"}
       >
-        <div className="flex flex-wrap gap-1 items-center mt-2">
+        <div className="flex flex-wrap gap-2 items-center mt-2 p-2">
           {props.tickets?.map((ticket: any) => {
             const isAlreadyTaken = !!ticket.owner?.email;
             const isAlreadySelected = selectedTicketsIds.includes(ticket._id);
@@ -51,16 +51,20 @@ const TicketsGrid: React.FC<any> = (props) => {
             return (
               <Chip
                 key={ticket._id}
-                className={"p-1 cursor-pointer"}
+                className={"p-2 cursor-pointer"}
                 variant={"bordered"}
-                color={`${isAlreadyTaken || isAlreadySelected ? "secondary" : "default"}`}
+                color={`${isAuthenticated && (isAlreadyTaken || isAlreadySelected) ? "secondary" : "default"}`}
                 onClick={() =>
                   isAlreadySelected
                     ? deselectTicketById(ticket._id)
                     : selectTicketById(ticket)
                 }
                 endContent={
-                  <>{isAlreadySelected ? <FaCheck color={"green"} /> : null}</>
+                  <>
+                    {isAlreadySelected && isAuthenticated ? (
+                      <FaCheck color={"green"} />
+                    ) : null}
+                  </>
                 }
                 isDisabled={!isAuthenticated}
               >

@@ -18,7 +18,6 @@ export function SaveReferralForm() {
       setErrorMessage(response.message);
     }
     setIsSaving(false);
-    console.log("RESPONSE", response);
   };
 
   return (

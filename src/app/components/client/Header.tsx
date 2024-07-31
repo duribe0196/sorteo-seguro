@@ -29,7 +29,7 @@ export default function Header() {
       <NavbarContent className="sm:flex gap-4" justify="center">
         {status === "authenticated" ? (
           <>
-            <LoginHeader />
+            <LoginHeader user={data?.user} />
             <NavbarItem isActive>
               <Link href="/my-profile" aria-current="page">
                 <p className={"text-black hover:text-white"}>

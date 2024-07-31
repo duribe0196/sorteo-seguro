@@ -102,7 +102,7 @@ export const getPublishedRaffles = async () => {
     ]).exec();
     return JSON.parse(JSON.stringify(publishedRaffles));
   } catch (e: any) {
-    console.log(e);
+    console.error(e);
     return null;
   }
 };

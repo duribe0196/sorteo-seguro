@@ -6,6 +6,7 @@ import TicketSkeleton from "@/app/components/server/TicketSkeleton";
 import SelectedTickets from "@/app/components/client/SelectedTickets";
 import { SelectedTicketsProvider } from "@/app/components/client/SelectedTicketsContext";
 import { getRaffleById } from "@/lib/actions/raffles";
+import { RaffleDescriptionTable } from "@/app/components/client/RaffleDescriptionTable";
 
 export default async function Page({ searchParams, params }: any) {
   let page = parseInt(searchParams.page, 10);
@@ -21,14 +22,13 @@ export default async function Page({ searchParams, params }: any) {
       <div className="mt-2 flex items-center text-sm text-gray-500">
         <GoBack />
       </div>
-
-      <h3 className={"text-xl mt-2 font-bold text-primary"}>
-        {raffle.raffleName} - Precio por boleta: ${raffle.ticketPrice}
-      </h3>
+      <div className="mt-2 flex items-center text-sm text-gray-500">
+        <RaffleDescriptionTable raffle={raffle} />
+      </div>
 
       <div className={"mt-2"}>
         <SelectedTicketsProvider>
-          <SelectedTickets raffle={raffle} user={{}} />
+          <SelectedTickets raffle={raffle} />
           <Suspense fallback={<TicketSkeleton />} key={page}>
             <ListRaffleTickets raffleId={params.id} pageNumber={page} />
           </Suspense>
