@@ -16,12 +16,15 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/modal";
-import { DatePicker } from "@nextui-org/date-picker";
 import { Input } from "@nextui-org/input";
-import { MailIcon } from "@nextui-org/shared-icons";
+import CreateChangeDateActivity from "@/app/components/client/CreateChangeDateActivity";
+import CreateWinnerActivity from "@/app/components/client/CreateWinnerActivity";
 
-export default function CreateActivity() {
+export default function CreateActivity(props: any) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const lastActivity = props.activities.findLast(
+    (activity: any) => activity.type === "DATE_CHANGE",
+  );
 
   return (
     <>
@@ -39,7 +42,6 @@ export default function CreateActivity() {
             <>
               <ModalHeader className="flex flex-col gap-1">
                 Crear actividad
-                <p>Aqui puedes definir un cambio de fecha,</p>
               </ModalHeader>
               <ModalBody>
                 <Accordion>
@@ -48,37 +50,14 @@ export default function CreateActivity() {
                     aria-label="Cambio de fecha"
                     title="Cambio de fecha"
                     subtitle={
-                      "No hubo ganador, el sorteo se volvera a jugar con una nueva fecha"
+                      "No hubo ganador, el sorteo se volvera a jugar con una nueva fecha y todos los participantes siguen con sus boletas. Es una nueva oportunidad para ganar"
                     }
                   >
-                    <div className={"flex flex-col gap-2"}>
-                      <Input
-                        type="text"
-                        label="Número jugado"
-                        placeholder="Número"
-                        labelPlacement="outside"
-                        startContent={
-                          <AiOutlineFieldNumber className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                        }
-                      />
-                      <DatePicker
-                        label="Nueva fecha"
-                        className="max-w-[284px]"
-                        labelPlacement={"outside"}
-                      />
-                      <Button
-                        className={"text-black font-bold"}
-                        color="secondary"
-                        onPress={async () => {
-                          console.log(
-                            "Call Server Action to create activities",
-                          );
-                          onClose();
-                        }}
-                      >
-                        Guardar nueva fecha
-                      </Button>
-                    </div>
+                    <CreateChangeDateActivity
+                      raffle={props.raffle}
+                      lastActivity={lastActivity}
+                      onClose={onClose}
+                    />
                   </AccordionItem>
                   <AccordionItem
                     key="2"
@@ -86,38 +65,10 @@ export default function CreateActivity() {
                     title="Hubo un ganador"
                     subtitle={"Hubo ganador, el sorteo se ha completado"}
                   >
-                    <div className={"flex flex-col gap-1"}>
-                      <Input
-                        type="email"
-                        label="Selecciona al ganador"
-                        placeholder="correo electronico"
-                        labelPlacement="outside"
-                        startContent={
-                          <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                        }
-                      />
-                      <Input
-                        type="text"
-                        label="Número ganador"
-                        placeholder="Número"
-                        labelPlacement="outside"
-                        startContent={
-                          <AiOutlineFieldNumber className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                        }
-                      />
-                      <Button
-                        className={"text-black font-bold mt-2"}
-                        color="secondary"
-                        onPress={async () => {
-                          console.log(
-                            "Call Server Action to create activities",
-                          );
-                          onClose();
-                        }}
-                      >
-                        Finalizar sorteo CON GANADOR
-                      </Button>
-                    </div>
+                    <CreateWinnerActivity
+                      raffle={props.raffle}
+                      onClose={onClose}
+                    />
                   </AccordionItem>
                   <AccordionItem
                     key="3"

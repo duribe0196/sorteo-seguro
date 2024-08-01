@@ -6,6 +6,7 @@ import { getRaffleById } from "@/lib/actions/raffles";
 import React, { Suspense } from "react";
 import GoBack from "@/app/components/client/GoBack";
 import HandleMyPublicRaffle from "@/app/components/server/HandleMyPublicRaffle";
+import { getPopulatedActivitiesByRaffleId } from "@/lib/actions/activities";
 
 export default async function ManageRafflePage(props: any) {
   const session = await getServerSession(authOptions);
@@ -13,7 +14,14 @@ export default async function ManageRafflePage(props: any) {
     redirect("/");
   }
 
-  const raffle = await getRaffleById(props.params.id);
+  const [activitiesResult, raffleResult] = await Promise.allSettled([
+    getPopulatedActivitiesByRaffleId(props.params.id),
+    getRaffleById(props.params.id),
+  ]);
+
+  const activities =
+    activitiesResult.status === "fulfilled" ? activitiesResult.value : [];
+  const raffle = raffleResult.status === "fulfilled" ? raffleResult.value : {};
 
   return (
     <div className={"p-5"}>
@@ -25,7 +33,7 @@ export default async function ManageRafflePage(props: any) {
         </Suspense>
       ) : (
         <Suspense fallback={<div>Cargando sorteo</div>}>
-          <HandleMyPublicRaffle raffle={raffle} />
+          <HandleMyPublicRaffle raffle={raffle} activities={activities} />
         </Suspense>
       )}
     </div>

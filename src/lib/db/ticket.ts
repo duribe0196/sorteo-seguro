@@ -1,16 +1,11 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import { IUserDocument } from "@/lib/db/user";
+import { IRaffleDocument } from "@/lib/db/raffle";
 
 export interface ITicket {
   number: number;
-  owner?: mongoose.Types.ObjectId;
-  raffleId: mongoose.Types.ObjectId;
-}
-
-export interface ITicketPopulated {
-  number: number;
-  owner: IUserDocument;
-  raffleId: mongoose.Types.ObjectId;
+  owner?: mongoose.Types.ObjectId | IUserDocument;
+  raffle: mongoose.Types.ObjectId | IRaffleDocument;
 }
 
 export type ITicketDocument = ITicket & Document;
@@ -21,7 +16,7 @@ export const ticketSchema: Schema<ITicketDocument> = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users",
   },
-  raffleId: {
+  raffle: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Raffles",
     required: true,

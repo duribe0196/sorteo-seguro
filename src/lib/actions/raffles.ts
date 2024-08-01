@@ -63,9 +63,6 @@ export const createRaffle = async (raffleInfo: any) => {
 
     await TicketModel.insertMany(tickets);
 
-    console.log(
-      `${raffleInfo.numberOfTickets} tickets created for raffle ${raffleInfo.raffleName}`,
-    );
     revalidatePath("/my-profile/raffles");
     return {
       success: true,
@@ -81,26 +78,15 @@ export const createRaffle = async (raffleInfo: any) => {
 export const getPublishedRaffles = async () => {
   await connectToDB();
   try {
-    const publishedRaffles = await RaffleModel.aggregate([
-      {
-        $match: { status: "publish" },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "owner",
-          foreignField: "_id",
-          as: "owner",
-        },
-      },
-      {
-        $unwind: "$owner",
-      },
-      {
-        $match: { "owner.role": "admin" },
-      },
-    ]).exec();
-    return JSON.parse(JSON.stringify(publishedRaffles));
+    const publishedRaffles = await RaffleModel.find({ status: "publish" })
+      .populate({
+        path: "owner",
+        match: { role: "admin" },
+      })
+      .exec();
+
+    const filteredRaffles = publishedRaffles.filter((raffle) => raffle.owner);
+    return JSON.parse(JSON.stringify(filteredRaffles));
   } catch (e: any) {
     console.error(e);
     return null;

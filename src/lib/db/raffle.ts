@@ -1,5 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import { z } from "zod";
+import { IUserDocument } from "@/lib/db/user";
 
 export interface IRaffle {
   raffleName: String;
@@ -9,8 +10,8 @@ export interface IRaffle {
   startDate: Date;
   endDate: Date;
   minimumNumberOfTicketsPerUser: Number;
-  createdAt: String;
-  owner: mongoose.Types.ObjectId;
+  createdAt: Date;
+  owner: mongoose.Types.ObjectId | IUserDocument;
   status: String;
 }
 
@@ -51,5 +52,5 @@ export const raffleValidationSchema = z.object({
     (val) => parseInt(val as string, 10),
     z.number(),
   ),
-  status: z.enum(["draft", "publish"]).optional(),
+  status: z.enum(["draft", "publish", "completed"]).optional(),
 });
