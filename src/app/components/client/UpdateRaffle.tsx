@@ -1,20 +1,13 @@
 "use client";
-import { DropdownStatus } from "@/app/components/client/DropdownStatus";
-import { deleteRaffle, updateRaffle } from "@/lib/actions/raffles";
+
+import { updateRaffle } from "@/lib/actions/raffles";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { parseDate } from "@internationalized/date";
 import { RangeCalendar } from "@nextui-org/calendar";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { extractRaffleInfoToUpdate } from "@/lib/utils/formData";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from "@nextui-org/modal";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const statuses = [
@@ -43,37 +36,28 @@ export function UpdateRaffle(props: any) {
     props.raffle.endDate.toString().substring(0, 10),
   );
 
-  const router = useRouter();
   const [startDate, setStartDate] = useState(parsedStartDate);
   const [endDate, setEndDate] = useState(parsedEndDate);
-  const [errorMessage, setErrorMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [isRemoving, setIsRemoving] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(initStatus);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [errorMessage, setErrorMessage] = useState("");
+  const { data } = useSession();
+  const router = useRouter();
+
   const sendUpdateRaffle = async (formData: FormData) => {
     setErrorMessage("");
     const raffleInfo: any = extractRaffleInfoToUpdate(formData);
     raffleInfo.startDate = startDate.toString();
     raffleInfo.endDate = endDate.toString();
     raffleInfo.status = selectedStatus?.value;
-    const response = await updateRaffle(raffleInfo);
+    const response = await updateRaffle(raffleInfo, data?.user?._id);
     if (response.fail) {
       setErrorMessage(response.message);
     }
-    setIsSaving(false);
-  };
-
-  const sendDeleteRaffle = async (raffleId: string) => {
-    setErrorMessage("");
-    const response = await deleteRaffle(raffleId);
-    if (response.fail) {
-      setErrorMessage(response.message);
-    }
-    setIsRemoving(false);
     if (response.success) {
       router.replace("/my-profile/raffles");
     }
+    setIsSaving(false);
   };
 
   useEffect(() => {
@@ -185,15 +169,6 @@ export function UpdateRaffle(props: any) {
           </div>
 
           <div className="flex items-center gap-2 mt-2">
-            Actualizar estado del sorteo
-            <DropdownStatus
-              currentStatus={props.raffle.status}
-              selectedStatus={selectedStatus}
-              setSelectedStatus={setSelectedStatus}
-              statuses={statuses}
-            />
-          </div>
-          <div className="flex items-center gap-2 mt-2">
             <Button
               type={"submit"}
               color={"secondary"}
@@ -202,56 +177,12 @@ export function UpdateRaffle(props: any) {
             >
               Guardar
             </Button>
-            <Button
-              type={"button"}
-              onPress={onOpen}
-              color={"danger"}
-              isLoading={isRemoving}
-              isDisabled={isSaving}
-            >
-              Eliminar
-            </Button>
           </div>
           <div>
             <p className={"p-5 flex text-danger"}>{errorMessage}</p>
           </div>
         </div>
       </form>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                ¿Seguro de eliminar el sorteo?
-              </ModalHeader>
-              <ModalBody>
-                <p>
-                  Esta acción no tiene reversa, una vez elimines el sorteo no
-                  podras recuperarlo.
-                </p>
-                <p>Si quieres un nuevo sorteo, tendras que crearlo</p>
-                <p>
-                  <Button
-                    color="danger"
-                    onPress={async () => {
-                      setIsRemoving(true);
-                      await sendDeleteRaffle(props.raffle._id);
-                      onClose();
-                    }}
-                  >
-                    Si quiero eliminar
-                  </Button>
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="default" variant="light" onPress={onClose}>
-                  No quiero eliminar el sorteo
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </>
   );
 }

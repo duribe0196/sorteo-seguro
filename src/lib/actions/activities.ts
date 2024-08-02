@@ -83,6 +83,39 @@ export const createWinnerActivity = async (args: ICreateWinnerActivityArgs) => {
   }
 };
 
+export interface ICreateNoWinnerActivityArgs {
+  raffleId: string;
+  ticketPlayed: string;
+}
+export const createNoWinnerActivity = async (
+  args: ICreateNoWinnerActivityArgs,
+) => {
+  try {
+    const newActivity = new ActivityModel({
+      raffle: args.raffleId,
+      ticketPlayed: args.ticketPlayed,
+      type: ActivityType.TERMINATE_WITH_NO_WINNER,
+    });
+
+    await RaffleModel.findByIdAndUpdate(args.raffleId, { status: "completed" });
+
+    await newActivity.save();
+    revalidatePath(`/my-profile/raffles/${args.raffleId}`);
+    return {
+      fail: false,
+      success: true,
+      message: "OK",
+    };
+  } catch (e: any) {
+    console.error(e);
+    return {
+      fail: true,
+      success: false,
+      message: "Hubo un error al crear la actividad de NO ganador",
+    };
+  }
+};
+
 export async function getPopulatedActivitiesByRaffleId(raffleId: string) {
   try {
     const activities: IActivityDocument[] = await ActivityModel.find({

@@ -39,6 +39,23 @@ export async function findUser(email: string) {
   }
 }
 
+export async function findUserById(userId: string) {
+  await connectToDB();
+  try {
+    const user = await UserModel.findById(userId);
+    if (user) {
+      return JSON.parse(JSON.stringify(user));
+    } else {
+      console.warn("No user found with id", userId);
+      return null;
+    }
+  } catch (e: any) {
+    const error = `Error finding the user, ${e.message}`;
+    console.error(error);
+    return { error };
+  }
+}
+
 export async function findUserPopulated(email: string): Promise<any> {
   await connectToDB();
   try {

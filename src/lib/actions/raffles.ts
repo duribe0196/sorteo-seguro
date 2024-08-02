@@ -58,7 +58,7 @@ export const createRaffle = async (raffleInfo: any) => {
       i <= parseInt(raffleInfo.numberOfTickets!.toString());
       i++
     ) {
-      tickets.push({ number: i, raffleId: raffleCreated._id });
+      tickets.push({ number: i, raffle: raffleCreated._id });
     }
 
     await TicketModel.insertMany(tickets);
@@ -147,7 +147,7 @@ export const getTicketsByRaffle = async (
 ) => {
   await connectToDB();
   try {
-    const tickets = await TicketModel.find({ raffleId })
+    const tickets = await TicketModel.find({ raffle: raffleId })
       .populate("owner")
       .sort({ number: 1 })
       .skip(limitTicketsPerPage * (page - 1))
@@ -163,26 +163,74 @@ export const getTicketsByRaffle = async (
 export const getTicketsCountByRaffle = async (raffleId: string) => {
   await connectToDB();
   try {
-    const count = await TicketModel.countDocuments({ raffleId });
-    return count;
+    return await TicketModel.countDocuments({ raffle: raffleId });
   } catch (e: any) {
     console.error(e);
     return null;
   }
 };
 
-export const updateRaffle = async (raffleInfo: any) => {
+interface IPublishRaffle {
+  raffleId: string;
+  status: string;
+  userId?: string;
+}
+export const publishRaffle = async (args: IPublishRaffle) => {
+  await connectToDB();
+  try {
+    const { userId, status, raffleId } = args;
+    const user = await getUser();
+
+    if (!userId || userId !== user._id) {
+      return {
+        success: false,
+        fail: true,
+        message: "Error publicando el sorteo",
+      };
+    }
+
+    await RaffleModel.findOneAndUpdate(
+      { _id: raffleId, owner: userId },
+      { status: status },
+    );
+
+    revalidatePath("my-profile/raffles");
+
+    return {
+      success: true,
+      fail: false,
+      message: "Sorteo publicado correctamente",
+    };
+  } catch (e: any) {
+    console.error(e);
+    return {
+      success: false,
+      fail: true,
+      message: "Error publicando el sorteo",
+    };
+  }
+};
+
+export const updateRaffle = async (raffleInfo: any, userId?: string) => {
   await connectToDB();
   try {
     const user = await getUser();
-    raffleInfo.owner = user._id;
 
-    await RaffleModel.findByIdAndUpdate(raffleInfo._id, raffleInfo, {
-      new: true,
-    });
+    if (!userId || userId !== user._id) {
+      return {
+        success: false,
+        fail: true,
+        message: "Error actualizando el sorteo, usuario no coincide",
+      };
+    }
+
+    await RaffleModel.findOneAndUpdate(
+      { _id: raffleInfo._id, owner: userId },
+      raffleInfo,
+    );
 
     const currentNumberOfTickets = await TicketModel.countDocuments({
-      raffleId: raffleInfo._id,
+      raffle: raffleInfo._id,
     });
 
     if (
@@ -190,7 +238,7 @@ export const updateRaffle = async (raffleInfo: any) => {
       parseInt(raffleInfo.numberOfTickets!.toString())
     ) {
       // Eliminar los boletos existentes
-      await TicketModel.deleteMany({ raffleId: raffleInfo._id });
+      await TicketModel.deleteMany({ raffle: raffleInfo._id });
 
       // Crear los nuevos boletos
       const tickets = [];
@@ -200,7 +248,7 @@ export const updateRaffle = async (raffleInfo: any) => {
         i++
       ) {
         tickets.push(
-          new TicketModel({ number: i, owner: null, raffleId: raffleInfo._id }),
+          new TicketModel({ number: i, owner: null, raffle: raffleInfo._id }),
         );
       }
       await TicketModel.insertMany(tickets);
@@ -236,7 +284,6 @@ export const deleteRaffle = async (raffleId: string) => {
         message: "Usuario no encontrado",
       };
     }
-
     const raffle = await RaffleModel.findById(raffleId);
     if (!raffle) {
       const error = "Sorteo no encontrado";
@@ -258,7 +305,7 @@ export const deleteRaffle = async (raffleId: string) => {
 
     await Promise.all([
       RaffleModel.findByIdAndDelete(raffleId),
-      TicketModel.deleteMany({ raffleId: raffleId }),
+      TicketModel.deleteMany({ raffle: raffleId }),
     ]);
 
     revalidatePath("my-profile/raffles");
@@ -287,7 +334,7 @@ export const selectTicket = async (ticketId: string) => {
     };
   }
   const ticketFound: any = await TicketModel.findById(ticketId)
-    .populate("raffleId")
+    .populate("raffle")
     .exec();
   const userFound: any = await findUser(session.user.email);
 
@@ -297,7 +344,7 @@ export const selectTicket = async (ticketId: string) => {
     return { error: errorMessage };
   }
 
-  if (ticketFound.raffleId.status !== "publish") {
+  if (ticketFound.raffle.status !== "publish") {
     const errorMessage = "Sorteo no esta disponible";
     console.warn("Ticket already taken");
     return { error: errorMessage };

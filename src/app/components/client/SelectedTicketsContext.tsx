@@ -9,7 +9,6 @@ import {
 } from "@/lib/utils/localStorage";
 import { selectTicket } from "@/lib/actions/raffles";
 import { useSession } from "next-auth/react";
-import { User } from "next-auth";
 
 export interface SelectedTicketsContextType {
   selectedTickets: string[];

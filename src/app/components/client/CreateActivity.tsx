@@ -16,9 +16,9 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/modal";
-import { Input } from "@nextui-org/input";
 import CreateChangeDateActivity from "@/app/components/client/CreateChangeDateActivity";
 import CreateWinnerActivity from "@/app/components/client/CreateWinnerActivity";
+import CreateNoWinnerActivity from "@/app/components/client/CreateNoWinnerActivity";
 
 export default function CreateActivity(props: any) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -81,29 +81,10 @@ export default function CreateActivity(props: any) {
                     title="No hubo ganador"
                     subtitle={"No hubo ganador, terminar sorteo SIN GANADOR"}
                   >
-                    <div className={"flex flex-col gap-2"}>
-                      <Input
-                        type="text"
-                        label="Número jugado"
-                        placeholder="Número"
-                        labelPlacement="outside"
-                        startContent={
-                          <AiOutlineFieldNumber className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                        }
-                      />
-                      <Button
-                        className={"text-black font-bold"}
-                        color="secondary"
-                        onPress={async () => {
-                          console.log(
-                            "Call Server Action to create activities",
-                          );
-                          onClose();
-                        }}
-                      >
-                        Finalizar sorteo SIN GANADOR
-                      </Button>
-                    </div>
+                    <CreateNoWinnerActivity
+                      raffle={props.raffle}
+                      onClose={onClose}
+                    />
                   </AccordionItem>
                 </Accordion>
               </ModalBody>

@@ -18,7 +18,10 @@ export default async function Page({ searchParams, params }: any) {
   page = !page || page < 0 ? 1 : page;
 
   const raffle = await getRaffleById(params.id);
-  if (raffle.status !== "publish") {
+  if (!raffle) {
+    redirect("/raffles");
+  }
+  if (["canceled", "completed"].includes(raffle.status)) {
     redirect(`/raffles/${raffle._id}/iterations`);
   }
 
