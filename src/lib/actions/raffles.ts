@@ -78,7 +78,9 @@ export const createRaffle = async (raffleInfo: any) => {
 export const getPublishedRaffles = async () => {
   await connectToDB();
   try {
-    const publishedRaffles = await RaffleModel.find({ status: "publish" })
+    const publishedRaffles = await RaffleModel.find({
+      $or: [{ status: "publish" }, { status: "completed" }],
+    })
       .populate({
         path: "owner",
         match: { role: "admin" },

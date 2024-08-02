@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { Divider } from "@nextui-org/divider";
 import Link from "next/link";
 import { formatToCOP } from "@/lib/utils/currency";
+import { Chip } from "@nextui-org/chip";
 
 const getRemainingDays = (endDate: string) => {
   const today = dayjs();
@@ -17,24 +18,39 @@ const getRemainingDays = (endDate: string) => {
 };
 
 export function RaffleCard(props: any) {
+  const hrefValue =
+    props.raffle.status === "publish"
+      ? `raffles/${props.raffle._id}`
+      : `raffles/${props.raffle._id}/iterations`;
   return (
     <Card isBlurred shadow="sm" className={"mt-2"}>
       <CardHeader
         className={
-          "flex items-center justify-center text-black bg-overlay-foreground"
+          "flex items-center justify-center text-black bg-overlay-foreground flex-col content-center"
         }
       >
-        <div className={"p-2"}>
-          <Link href={`raffles/${props.raffle._id}`}>
-            <p className={"text-xl"}>Podrás ganar {props.raffle.award}</p>
-          </Link>
+        <div>
+          {props.raffle.status === "publish" ? (
+            <Link href={hrefValue}>
+              <p className={"text-xl"}>Podrás ganar {props.raffle.award}</p>
+            </Link>
+          ) : (
+            <div className={"flex flex-col justify-center items-center"}>
+              <Link href={hrefValue}>
+                <p className={"text-xl"}>Se han ganado: {props.raffle.award}</p>
+              </Link>
+              <Chip variant={"shadow"} className={"text-white mx-auto"}>
+                Sorteo Completado
+              </Chip>
+            </div>
+          )}
         </div>
       </CardHeader>
       <Divider />
       <CardBody>
         <div className="flex flex-wrap w-full">
           <Link
-            href={`raffles/${props.raffle._id}`}
+            href={hrefValue}
             className="flex w-full md:w-1/2 flex-col items-center justify-center"
           >
             <Image
@@ -48,7 +64,7 @@ export function RaffleCard(props: any) {
           </Link>
 
           <div className="flex w-full md:w-1/2 flex-col items-center justify-center mt-2 md:mt-0 p-2">
-            <Link href={`raffles/${props.raffle._id}`}>
+            <Link href={hrefValue}>
               <div>
                 <p className={"text-lg hover:text-primary"}>
                   {props.raffle.raffleName} - Premio {props.raffle.award}
@@ -61,7 +77,13 @@ export function RaffleCard(props: any) {
               Precio por boleta: {formatToCOP(props.raffle.ticketPrice)}
             </p>
             <p className={"text-sm"}>
-              {getRemainingDays(props.raffle.endDate)}
+              {props.raffle.status === "publish" ? (
+                <>{getRemainingDays(props.raffle.endDate)}</>
+              ) : (
+                <Chip variant={"bordered"} className={"text-black"}>
+                  Ya ha habido un ganador
+                </Chip>
+              )}
             </p>
           </div>
         </div>
@@ -70,8 +92,10 @@ export function RaffleCard(props: any) {
       <CardFooter
         className={"flex items-center justify-center bg-primary text-white"}
       >
-        <Link href={`raffles/${props.raffle._id}`}>
-          <p className={"text-lg hover:font-extrabold"}>Comprar boletas</p>
+        <Link href={hrefValue}>
+          <p className={"text-lg hover:font-extrabold"}>
+            {props.raffle.status === "publish" ? "Comprar boletas" : "Ver mas"}
+          </p>
         </Link>
       </CardFooter>
     </Card>

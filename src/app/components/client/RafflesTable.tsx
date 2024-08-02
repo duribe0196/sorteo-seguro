@@ -15,6 +15,7 @@ const statusMap = {
   draft: "Borrador",
   publish: "Publicado",
   cancelled: "Cancelada",
+  completed: "Completado",
 };
 
 export function RafflesTable(props: any) {

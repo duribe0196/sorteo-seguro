@@ -33,9 +33,15 @@ export default function CreateActivity(props: any) {
         color={"primary"}
         endContent={<TbReport size={30} />}
         onClick={onOpen}
+        disabled={["completed", "cancelled"].includes(props.raffle.status)}
       >
         Crear Actividad
       </Button>
+      <p className={"text-black"}>
+        {["completed", "cancelled"].includes(props.raffle.status)
+          ? "No puedes agregar más actividades porque el sorteo se ha completado o cancelado"
+          : ""}
+      </p>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (

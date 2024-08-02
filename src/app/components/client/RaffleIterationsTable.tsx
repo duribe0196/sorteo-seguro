@@ -34,6 +34,10 @@ export function RaffleIterationsTable(props: any) {
   const [isRemoving, setIsRemoving] = useState(false);
   const router = useRouter();
 
+  const isDeleteDisabled =
+    ["cancelled", "completed"].includes(props.raffle.status) &&
+    props.activity.type === "DATE_CHANGE";
+
   const getTitle = (type: string, newDate: Date) => {
     switch (type) {
       case "DATE_CHANGE":
@@ -96,19 +100,26 @@ export function RaffleIterationsTable(props: any) {
                     : "No hubo ganador"}
                 </TableCell>
                 <TableCell>
-                  {dayjs(props.activity.newDate).format("LL")}
+                  {props.activity.newDate &&
+                  props.activity.type === "DATE_CHANGE"
+                    ? dayjs(props.activity.newDate).format("LL")
+                    : "No Aplica"}
                 </TableCell>
                 <TableCell>{props.activity.ticketPlayed}</TableCell>
                 <TableCell className={"text-balance"}>
                   {getDescription(props.activity.type, props.activity.newDate)}
                 </TableCell>
                 <TableCell>
-                  <AiOutlineDelete
+                  <Button
+                    variant={"ghost"}
+                    color={"danger"}
                     onClick={onOpen}
-                    size={30}
-                    color={"red"}
-                    className={"cursor-pointer"}
-                  />
+                    disabled={isDeleteDisabled}
+                    size={"sm"}
+                  >
+                    Eliminar
+                    <AiOutlineDelete size={20} />
+                  </Button>
                 </TableCell>
               </TableRow>
             </TableBody>
