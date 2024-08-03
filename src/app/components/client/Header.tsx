@@ -16,17 +16,24 @@ export default function Header() {
     <Navbar
       disableAnimation
       isBordered
-      className={"lg:flex lg:items-center lg:justify-between shadow-md"}
+      className={
+        "lg:flex lg:justify-between shadow-md md:flex-col  sm:flex-col"
+      }
     >
-      <NavbarContent className="pr-3" justify="center">
+      <NavbarContent className="pr-3" justify="start">
         <NavbarBrand>
           <Link href={"/raffles"} className="font-bold text-inherit">
-            Sorteo Seguro
+            Sorteos
           </Link>
         </NavbarBrand>
+        <NavbarItem>
+          <Link href="/advices" aria-current="page">
+            <p className={"text-black hover:text-white"}>Apuestas deportivas</p>
+          </Link>
+        </NavbarItem>
       </NavbarContent>
 
-      <NavbarContent className="sm:flex gap-4" justify="center">
+      <NavbarContent className="sm:flex gap-4" justify="end">
         {status === "authenticated" ? (
           <>
             <LoginHeader user={data?.user} />
