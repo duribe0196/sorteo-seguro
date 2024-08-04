@@ -26,7 +26,7 @@ export const createDateChangeActivity = async (
     });
 
     await newActivity.save();
-    revalidatePath(`/my-profile/raffles/${args.raffleId}`);
+    revalidatePath(`/admin/raffles/${args.raffleId}`);
     return {
       fail: false,
       success: true,
@@ -67,7 +67,7 @@ export const createWinnerActivity = async (args: ICreateWinnerActivityArgs) => {
     await RaffleModel.findByIdAndUpdate(args.raffleId, { status: "completed" });
 
     await newActivity.save();
-    revalidatePath(`/my-profile/raffles/${args.raffleId}`);
+    revalidatePath(`/admin/raffles/${args.raffleId}`);
     return {
       fail: false,
       success: true,
@@ -100,7 +100,7 @@ export const createNoWinnerActivity = async (
     await RaffleModel.findByIdAndUpdate(args.raffleId, { status: "completed" });
 
     await newActivity.save();
-    revalidatePath(`/my-profile/raffles/${args.raffleId}`);
+    revalidatePath(`/admin/raffles/${args.raffleId}`);
     return {
       fail: false,
       success: true,
@@ -178,7 +178,7 @@ export async function deleteActivityById(activityId: string) {
       });
     }
     await ActivityModel.findByIdAndDelete(activityId);
-    revalidatePath(`/my-profile/raffles/${activity.raffle._id}`);
+    revalidatePath(`/admin/raffles/${activity.raffle._id}`);
 
     return {
       success: true,

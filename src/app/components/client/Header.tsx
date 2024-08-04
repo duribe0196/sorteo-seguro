@@ -21,27 +21,23 @@ export default function Header() {
       }
     >
       <NavbarContent className="pr-3" justify="start">
-        <NavbarBrand>
-          <Link href={"/raffles"} className="font-bold text-inherit">
-            Sorteos
-          </Link>
+        <NavbarBrand className={"flex gap-4"}>
+          <NavbarItem>
+            <Link href={"/raffles"}>Sorteos</Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link href="/advices">Apuestas deportivas</Link>
+          </NavbarItem>
         </NavbarBrand>
-        <NavbarItem>
-          <Link href="/advices" aria-current="page">
-            <p className={"text-black hover:text-white"}>Apuestas deportivas</p>
-          </Link>
-        </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="sm:flex gap-4" justify="end">
         {status === "authenticated" ? (
           <>
             <LoginHeader user={data?.user} />
-            <NavbarItem isActive>
+            <NavbarItem>
               <Link href="/my-profile" aria-current="page">
-                <p className={"text-black hover:text-white"}>
-                  Mi cuenta {data?.user?.name}
-                </p>
+                Mi perfil
               </Link>
             </NavbarItem>
             <NavbarItem>

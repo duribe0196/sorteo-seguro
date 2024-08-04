@@ -55,7 +55,7 @@ export function UpdateRaffle(props: any) {
       setErrorMessage(response.message);
     }
     if (response.success) {
-      router.replace("/my-profile/raffles");
+      router.replace("/admin/raffles");
     }
     setIsSaving(false);
   };

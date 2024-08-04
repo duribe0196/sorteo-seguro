@@ -50,7 +50,7 @@ export function RafflesTable(props: any) {
     setIsRemoving(false);
     if (response.success) {
       onClose();
-      router.replace("/my-profile/raffles");
+      router.replace("/admin/raffles");
     }
   };
 
@@ -85,7 +85,7 @@ export function RafflesTable(props: any) {
             <div>
               <span className={"flex gap-2"}>
                 {raffle.status === "draft" ? (
-                  <Link href={`/my-profile/raffles/${raffle._id}`}>
+                  <Link href={`/admin/raffles/${raffle._id}`}>
                     <Button
                       color={"primary"}
                       variant={"light"}

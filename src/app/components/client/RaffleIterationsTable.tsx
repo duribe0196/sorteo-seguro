@@ -72,7 +72,7 @@ export function RaffleIterationsTable(props: any) {
     }
     setIsRemoving(false);
     if (response.success) {
-      router.replace(`/my-profile/raffles/${raffleId}`);
+      router.replace(`/admin/raffles/${raffleId}`);
     }
   };
 

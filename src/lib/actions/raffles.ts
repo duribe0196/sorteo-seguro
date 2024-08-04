@@ -63,7 +63,7 @@ export const createRaffle = async (raffleInfo: any) => {
 
     await TicketModel.insertMany(tickets);
 
-    revalidatePath("/my-profile/raffles");
+    revalidatePath("/admin/raffles");
     return {
       success: true,
       fail: false,
@@ -194,7 +194,7 @@ export const publishRaffle = async (args: IPublishRaffle) => {
       { status: status },
     );
 
-    revalidatePath("my-profile/raffles");
+    revalidatePath("admin/raffles");
 
     return {
       success: true,
@@ -254,7 +254,7 @@ export const updateRaffle = async (raffleInfo: any, userId?: string) => {
       await TicketModel.insertMany(tickets);
     }
 
-    revalidatePath("my-profile/raffles");
+    revalidatePath("admin/raffles");
 
     return {
       success: true,
@@ -308,7 +308,7 @@ export const deleteRaffle = async (raffleId: string) => {
       TicketModel.deleteMany({ raffle: raffleId }),
     ]);
 
-    revalidatePath("my-profile/raffles");
+    revalidatePath("admin/raffles");
 
     return {
       success: true,

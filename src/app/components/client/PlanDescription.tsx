@@ -7,10 +7,13 @@ import { Button } from "@nextui-org/button";
 import { Card, CardFooter, CardHeader } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { Chip } from "@nextui-org/chip";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function PlanDescription() {
+  const router = useRouter();
   return (
-    <div className={"max-w-lg mx-auto"}>
+    <div className={"mx-auto"}>
       <Card>
         <CardHeader className="z-10 top-1 flex-col items-start text-black">
           <h4 className="text-white/90 font-medium text-xl">
@@ -37,7 +40,7 @@ export function PlanDescription() {
           removeWrapper
           alt="Relaxing app background"
           className="z-0"
-          src="advices.jpg"
+          src="advices.png"
           shadow={"lg"}
         />
 
@@ -70,7 +73,7 @@ export function PlanDescription() {
             color={"primary"}
             className={"text-white"}
           >
-            Subscribirme
+            <Link href={"advices/subscribe"}>Subscribirme</Link>
           </Button>
         </CardFooter>
       </Card>
