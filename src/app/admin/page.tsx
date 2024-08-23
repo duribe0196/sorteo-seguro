@@ -1,9 +1,5 @@
-import AdminHeader from "@/app/components/client/AdminHeader";
+import { redirect } from "next/navigation";
 
 export default async function AdminPage() {
-  return (
-    <>
-      <AdminHeader />
-    </>
-  );
+  redirect("admin/advices");
 }

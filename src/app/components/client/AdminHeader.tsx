@@ -8,7 +8,7 @@ export default function AdminHeader() {
   const { data, status } = useSession();
   return (
     <Navbar>
-      {data?.user.role === "admin" ? (
+      {status === "authenticated" && data?.user.role === "admin" ? (
         <NavbarContent justify="end">
           <>
             <NavbarItem>
@@ -18,17 +18,22 @@ export default function AdminHeader() {
             </NavbarItem>
             <NavbarItem>
               <Link href="/admin/raffles" aria-current="page">
-                Manejar sorteos
+                Sorteos
               </Link>
             </NavbarItem>
             <NavbarItem>
-              <Link href="/admin/subscriptions" aria-current="page">
-                Manejar subscripciones
+              <Link href="/admin/plans" aria-current="page">
+                Planes
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link href="/admin/users" aria-current="page">
+                Usuarios
               </Link>
             </NavbarItem>
             <NavbarItem>
               <Link href="/admin/advices" aria-current="page">
-                Manejar apuestas deportivas
+                Asesoramiento deportivo
               </Link>
             </NavbarItem>
           </>

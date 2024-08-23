@@ -120,3 +120,31 @@ export async function saveReferral(
     return { message: "Algo salió mal", fail: true, success: false };
   }
 }
+
+export const getUserSubscription = async (userId?: string) => {
+  try {
+    const userFound = await UserModel.findById(userId);
+    return userFound?.validSubscription!!;
+  } catch (e: any) {
+    return false;
+  }
+};
+
+interface ISaveCustomerIdFromMercadoPago {
+  email: string;
+  customerId: string;
+}
+export const saveCustomerIdFromMercadoPago = async (
+  args: ISaveCustomerIdFromMercadoPago,
+) => {
+  try {
+    return await UserModel.findOneAndUpdate(
+      { email: args.email },
+      { $set: { customerId: args.customerId } },
+      { new: true },
+    );
+  } catch (e: any) {
+    const error = `Error saving customer id from mercado pago, ${e.message}`;
+    console.error(error);
+  }
+};

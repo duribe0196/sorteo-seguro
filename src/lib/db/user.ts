@@ -4,6 +4,8 @@ export interface IUser {
   name: string;
   email: string;
   role: string;
+  customerId: string;
+  validSubscription: true;
   freeTickets: number;
   referredBy: mongoose.Types.ObjectId;
   referrals: mongoose.Types.ObjectId[];
@@ -14,6 +16,7 @@ export type IUserDocument = IUser & Document;
 const userSchema: Schema<IUserDocument> = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
+  customerId: { type: String, unique: true },
   role: String,
   freeTickets: { type: Number, default: 1 },
   referredBy: {

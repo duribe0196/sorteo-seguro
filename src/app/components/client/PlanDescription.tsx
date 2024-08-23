@@ -10,7 +10,7 @@ import { Chip } from "@nextui-org/chip";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export function PlanDescription() {
+export function PlanDescription(props: any) {
   const router = useRouter();
   return (
     <div className={"mx-auto"}>
@@ -32,7 +32,7 @@ export function PlanDescription() {
           >
             Precio mensual
             <Chip className={"text-white"} color={"primary"}>
-              $5.000
+              ${props.plan.auto_recurring.transaction_amount}
             </Chip>
           </span>
         </CardHeader>
@@ -73,7 +73,9 @@ export function PlanDescription() {
             color={"primary"}
             className={"text-white"}
           >
-            <Link href={"advices/subscribe"}>Subscribirme</Link>
+            <Link href={`advices/subscribe/${props.plan.id}`}>
+              Subscribirme
+            </Link>
           </Button>
         </CardFooter>
       </Card>

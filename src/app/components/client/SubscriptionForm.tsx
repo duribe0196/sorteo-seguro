@@ -1,24 +1,26 @@
 "use client";
 
-import {
-  initMercadoPago,
-  createCardToken,
-  CardPayment,
-} from "@mercadopago/sdk-react";
+import { initMercadoPago, CardPayment } from "@mercadopago/sdk-react";
 import { Card } from "@nextui-org/card";
 import {
-  IAdditionalData,
   ICardPaymentBrickPayer,
   ICardPaymentFormData,
 } from "@mercadopago/sdk-react/bricks/cardPayment/type";
+import { createNewSubscription } from "@/lib/actions/mercadopago";
 
 initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!);
 
-export default function SubscribeForm() {
+export default function SubscribeForm(props: any) {
   const getCardToken = async (
     paymentInfo: ICardPaymentFormData<ICardPaymentBrickPayer>,
   ) => {
-    console.log(paymentInfo);
+    try {
+      console.log("PAYMENT INFO", paymentInfo);
+      const response = await createNewSubscription(paymentInfo, props.planId);
+      console.log("RESPONSE HERE", response);
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <div className={"p-4"}>

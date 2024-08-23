@@ -15,7 +15,7 @@ export async function ListPublicAdvices(props: any) {
       {!advices.length ? (
         <div className="px-4 sm:px-0 my-10">
           <h3 className="text-base font-semibold leading-7 text-gray-900">
-            No hay sorteos 🙁
+            No apuestas recolectadas
           </h3>
         </div>
       ) : null}
