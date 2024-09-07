@@ -130,12 +130,12 @@ export const getUserSubscription = async (userId?: string) => {
   }
 };
 
-interface ISaveCustomerIdFromMercadoPago {
+interface ISaveCustomerIdFromStripe {
   email: string;
   customerId: string;
 }
-export const saveCustomerIdFromMercadoPago = async (
-  args: ISaveCustomerIdFromMercadoPago,
+export const saveCustomerIdFromStripe = async (
+  args: ISaveCustomerIdFromStripe,
 ) => {
   try {
     return await UserModel.findOneAndUpdate(

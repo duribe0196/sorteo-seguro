@@ -32,7 +32,7 @@ export function PlanDescription(props: any) {
           >
             Precio mensual
             <Chip className={"text-white"} color={"primary"}>
-              ${props.plan.auto_recurring.transaction_amount}
+              ${props.plan.price.unitAmount} ${props.plan.price.currency}
             </Chip>
           </span>
         </CardHeader>

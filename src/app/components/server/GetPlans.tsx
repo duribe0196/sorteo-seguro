@@ -1,54 +1,31 @@
 import PlansTable from "@/app/components/client/PlansTable";
-
-async function getPlans() {
-  try {
-    const baseUrl = process.env.MERCADO_PAGO_BASE_URL!;
-    const response = await fetch(`${baseUrl}/preapproval_plan/search`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN!}`,
-      },
-    });
-    if (response.ok) {
-      return await response.json();
-    }
-    return null;
-  } catch (e: any) {
-    console.error(
-      `Something went wrong getting plans from mercado pago ${e.message}`,
-    );
-  }
-}
+import { getSubscriptionProducts } from "@/lib/actions/stripe";
 
 const columns = [
   {
-    key: "reason",
-    label: "Razon",
+    key: "description",
+    label: "Descripcion",
   },
   {
     key: "price",
     label: "Precio",
   },
   {
-    key: "status",
-    label: "Estado",
+    key: "active",
+    label: "Activo",
   },
   {
-    key: "subscribed",
+    key: "subscribersCount",
     label: "Subscriptores",
   },
   {
     key: "frequency",
     label: "Frequencia",
   },
-  {
-    key: "billingDay",
-    label: "Dia de cobro",
-  },
 ];
 
 export default async function GetPlans() {
-  const plans = await getPlans();
+  const plans = await getSubscriptionProducts();
 
-  return <PlansTable plans={plans.results} columns={columns} />;
+  return <PlansTable plans={plans} columns={columns} />;
 }

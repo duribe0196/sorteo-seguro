@@ -1,4 +1,4 @@
-import { getUsers } from "@/lib/actions/mercadopago";
+import { getCustomers } from "@/lib/actions/stripe";
 import UsersTable from "@/app/components/client/UsersTable";
 
 const columns = [
@@ -25,10 +25,7 @@ const columns = [
 ];
 
 export default async function GetUsers() {
-  const users = await getUsers();
-  return (
-    <>
-      <UsersTable columns={columns} users={users.results} />
-    </>
-  );
+  const users = await getCustomers();
+  console.log(users);
+  return <>{/*<UsersTable columns={columns} users={users.data} />*/}</>;
 }

@@ -18,12 +18,9 @@ export default function PlansTable(props: any) {
 
       switch (columnKey) {
         case "price":
-          return formatToCOP(plan.auto_recurring.transaction_amount);
+          return formatToCOP(plan.price.unitAmount);
         case "frequency":
-          return plan.auto_recurring.frequency_type;
-
-        case "billingDay":
-          return plan.auto_recurring.billing_day;
+          return plan.price.recurring;
         default:
           return cellValue;
       }

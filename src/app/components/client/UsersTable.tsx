@@ -19,7 +19,7 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 import { useRouter } from "next/navigation";
-import { deleteUser } from "@/lib/actions/mercadopago";
+import { deleteCustomer } from "@/lib/actions/stripe";
 import Link from "next/link";
 
 export default function UsersTable(props: any) {
@@ -66,7 +66,7 @@ export default function UsersTable(props: any) {
 
   const sendDeleteUser = async (customerId: string, onClose: any) => {
     setErrorMessage("");
-    const response = await deleteUser(customerId);
+    const response = await deleteCustomer(customerId);
     if (response.fail) {
       setErrorMessage(response.message);
     }

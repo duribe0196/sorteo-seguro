@@ -4,13 +4,13 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getUserSubscription } from "@/lib/actions/users";
 import { PlanDescription } from "@/app/components/client/PlanDescription";
-import { getPlans } from "@/lib/actions/mercadopago";
+import { getSubscriptionProducts } from "@/lib/actions/stripe";
 
 export default async function Advices() {
   const session = await getServerSession(authOptions);
-  const [subscription, plans] = await Promise.all([
+  const [subscription, subscriptionProducts] = await Promise.all([
     getUserSubscription(session?.user._id),
-    getPlans(),
+    getSubscriptionProducts(),
   ]);
 
   return (
@@ -29,7 +29,7 @@ export default async function Advices() {
         </>
       ) : (
         <div className="px-4 sm:px-0 my-10 mt-2 flex flex-col justify-center items-center gap-2">
-          {plans?.map((plan) => {
+          {subscriptionProducts?.map((plan) => {
             return (
               <div key={plan.id}>
                 <PlanDescription plan={plan} />
