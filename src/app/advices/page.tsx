@@ -5,6 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getUserSubscription } from "@/lib/actions/users";
 import { PlanDescription } from "@/app/components/client/PlanDescription";
 import { getSubscriptionProducts } from "@/lib/actions/stripe";
+import { SigninGoogleButton } from "@/app/components/client/SigninGoogleButton";
 
 export default async function Advices() {
   const session = await getServerSession(authOptions);
@@ -15,27 +16,25 @@ export default async function Advices() {
 
   return (
     <div className={"p-2"}>
-      {subscription ? (
-        <>
-          <div className="px-4 sm:px-0 my-10 mt-2">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Consejos deportivos
-            </h2>
-          </div>
-
-          <Suspense fallback={<span>Cargando consejos...</span>}>
-            <ListPublicAdvices />
-          </Suspense>
-        </>
-      ) : (
+      {session?.user._id && !subscription ? (
         <div className="px-4 sm:px-0 my-10 mt-2 flex flex-col justify-center items-center gap-2">
-          {subscriptionProducts?.map((plan) => {
-            return (
-              <div key={plan.id}>
-                <PlanDescription plan={plan} />
-              </div>
-            );
-          })}
+          <PlanDescription plan={subscriptionProducts[0]} />
+
+          <p>
+            Bienvenido {session?.user.name}, eres parte de nuestra comunidad
+            gratuita
+          </p>
+        </div>
+      ) : null}
+
+      {session?.user._id ? (
+        <Suspense fallback={<span>Cargando consejos...</span>}>
+          <ListPublicAdvices />
+        </Suspense>
+      ) : (
+        <div className={"px-4 sm:px-0 my-10 mt-2"}>
+          <p>Primero debes iniciar sesión para obtener información deportiva</p>
+          <SigninGoogleButton />
         </div>
       )}
     </div>

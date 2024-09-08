@@ -8,6 +8,19 @@ export const getSubscriptionProducts = async () => {
   const promises = products.data.map(async (product) => {
     if (product.default_price && typeof product.default_price === "string") {
       const price = await stripeClient.prices.retrieve(product.default_price);
+      const paymentLink = await stripeClient.paymentLinks.create({
+        line_items: [
+          {
+            price: product.default_price,
+            quantity: 1,
+          },
+        ],
+        after_completion: {
+          type: "redirect",
+          redirect: { url: `${process.env.DOMAIN}/payment-result` },
+        },
+      });
+
       const subscriptions = await stripeClient.subscriptions.list({
         price: product.default_price,
         status: "active",
@@ -21,6 +34,8 @@ export const getSubscriptionProducts = async () => {
       };
       // @ts-ignore
       product.subscribersCount = subscriptions.data.length;
+      // @ts-ignore
+      product.paymentLink = paymentLink.url;
     }
   });
   await Promise.all(promises);
