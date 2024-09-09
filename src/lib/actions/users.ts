@@ -44,7 +44,12 @@ export async function createUser(user: User) {
   try {
     const existingUser = await UserModel.findOne({ email: user.email });
     if (!existingUser) {
-      const newUser = new UserModel({ ...user, freeTickets: 1, role: "user" });
+      const newUser = new UserModel({
+        ...user,
+        freeTickets: 1,
+        role: "user",
+        subscriptionStatus: "inactive",
+      });
       await newUser.save();
     } else {
       console.warn("User already exists with email", user.email);
@@ -191,13 +196,23 @@ interface IUpdateSubscriptionStatus {
 export const updateSubscriptionStatus = async (
   args: IUpdateSubscriptionStatus,
 ) => {
-  console.log("Updating here", args);
   try {
-    return await UserModel.findOneAndUpdate(
-      { customerId: args.customerId },
-      { $set: { subscriptionStatus: args.status } },
-      { new: true },
-    );
+    const userFound = await UserModel.findOne({ customerId: args.customerId });
+    if (!userFound) {
+      console.error("No user found with customer id", args.customerId);
+      return null;
+    }
+    if (userFound.subscriptionStatus !== "active") {
+      console.log(
+        "Creating new user subscription for customer id",
+        args.customerId,
+      );
+      await UserModel.findOneAndUpdate(
+        { customerId: args.customerId },
+        { $set: { subscriptionStatus: args.status } },
+        { new: true },
+      );
+    }
   } catch (e: any) {
     const error = `Error updating subscription status, ${e.message}`;
     console.error(error);

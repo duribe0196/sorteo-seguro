@@ -33,6 +33,7 @@ export async function POST(request: Request, response: Response) {
   const eventData = event.data.object;
   switch (event.type) {
     case "checkout.session.completed":
+      console.log("Checkout completed for customer id", eventData.customer);
       await saveCustomerIdFromStripe({
         email: eventData.metadata.userEmail,
         customerId: eventData.customer,
@@ -40,6 +41,7 @@ export async function POST(request: Request, response: Response) {
       return new Response("OK");
 
     case "invoice.payment_succeeded":
+      console.log("Payment succeeded for customer id", eventData.customer);
       await updateSubscriptionStatus({
         customerId: eventData.customer,
         status: "active",

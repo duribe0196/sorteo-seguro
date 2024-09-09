@@ -21,6 +21,7 @@ import {
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { deleteUser } from "@/lib/actions/users";
+import { useSession } from "next-auth/react";
 
 export default function UsersTable(props: any) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -28,10 +29,12 @@ export default function UsersTable(props: any) {
   const [errorMessage, setErrorMessage] = useState("");
   const [userToDelete, setUserToDelete] = useState("");
   const router = useRouter();
+  const session = useSession({ required: true });
 
   const renderCell = React.useCallback(
     (user: { [x: string]: any }, columnKey: string | number) => {
       const cellValue = user[columnKey];
+
       switch (columnKey) {
         case "actions":
           return (
@@ -47,6 +50,7 @@ export default function UsersTable(props: any) {
                   onOpen();
                   setUserToDelete(user._id);
                 }}
+                disabled={user._id === session.data?.user._id}
               >
                 Eliminar
               </Button>
@@ -57,7 +61,7 @@ export default function UsersTable(props: any) {
           return cellValue;
       }
     },
-    [],
+    [session.status],
   );
 
   const sendDeleteUser = async (userId: string, onClose: any) => {
@@ -72,6 +76,10 @@ export default function UsersTable(props: any) {
       router.replace("/admin/users");
     }
   };
+
+  if (session.status === "loading") {
+    return <p>Cargando datos de usuario...</p>;
+  }
 
   return (
     <>
