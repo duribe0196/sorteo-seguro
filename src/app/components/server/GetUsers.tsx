@@ -1,22 +1,26 @@
-import { getCustomers } from "@/lib/actions/stripe";
+import { getUsers } from "@/lib/actions/users";
 import UsersTable from "@/app/components/client/UsersTable";
 
 const columns = [
   {
-    key: "id",
-    label: "Customer Id",
+    key: "_id",
+    label: "user ID",
   },
   {
     key: "email",
     label: "Email",
   },
   {
-    key: "ccNumber",
-    label: "Identificación",
+    key: "name",
+    label: "Nombre",
   },
   {
-    key: "date_created",
-    label: "Cliente desde",
+    key: "role",
+    label: "Role",
+  },
+  {
+    key: "subscriptionStatus",
+    label: "Subscripcion",
   },
   {
     key: "actions",
@@ -25,7 +29,6 @@ const columns = [
 ];
 
 export default async function GetUsers() {
-  const users = await getCustomers();
-  console.log(users);
-  return <>{/*<UsersTable columns={columns} users={users.data} />*/}</>;
+  const users = await getUsers();
+  return <>{<UsersTable columns={columns} users={users} />}</>;
 }

@@ -5,7 +5,8 @@ export interface IUser {
   email: string;
   role: string;
   customerId: string;
-  validSubscription: true;
+  subscriptionStatus: string;
+  validSubscription: boolean;
   freeTickets: number;
   referredBy: mongoose.Types.ObjectId;
   referrals: mongoose.Types.ObjectId[];
@@ -17,6 +18,7 @@ const userSchema: Schema<IUserDocument> = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   customerId: { type: String, unique: true },
+  subscriptionStatus: { type: String, default: "inactive" },
   role: String,
   freeTickets: { type: Number, default: 1 },
   referredBy: {

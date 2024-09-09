@@ -1,4 +1,9 @@
 import * as stripe from "stripe";
+import { UserModel } from "@/lib/db/user";
+import {
+  saveCustomerIdFromStripe,
+  updateSubscriptionStatus,
+} from "@/lib/actions/users";
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY!;
 const webhookSecretKey = process.env.STRIPE_WEBHOOK_SECRET!;
 const stripeClient = new stripe.Stripe(stripeSecretKey);
@@ -25,24 +30,24 @@ export async function POST(request: Request, response: Response) {
   if (!event) {
     return new Response(`No event message`, { status: 400 });
   }
-
+  const eventData = event.data.object;
   switch (event.type) {
     case "checkout.session.completed":
-      const paymentData = event.data.object;
-      console.log("PaymentIntent was successful!", paymentData);
+      await saveCustomerIdFromStripe({
+        email: eventData.metadata.userEmail,
+        customerId: eventData.customer,
+      });
       return new Response("OK");
 
     case "invoice.payment_succeeded":
-      const subscriptionPayment = event.data.object;
-      console.log("SubscriptionPayment was successful", subscriptionPayment);
+      await updateSubscriptionStatus({
+        customerId: eventData.customer,
+        status: "active",
+      });
       return new Response("OK");
 
     case "invoice.payment_failed":
-      const subscriptionPaymentFailedData = event.data.object;
-      console.log(
-        "subscriptionPaymentFailedData",
-        subscriptionPaymentFailedData,
-      );
+      // investigate what this event mains and if in this part we should inactivate subscription
       return new Response("OK");
     default:
       console.log(`Unhandled event type ${event.type}`);

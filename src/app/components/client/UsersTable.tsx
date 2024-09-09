@@ -19,8 +19,8 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 import { useRouter } from "next/navigation";
-import { deleteCustomer } from "@/lib/actions/stripe";
 import Link from "next/link";
+import { deleteUser } from "@/lib/actions/users";
 
 export default function UsersTable(props: any) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -33,15 +33,11 @@ export default function UsersTable(props: any) {
     (user: { [x: string]: any }, columnKey: string | number) => {
       const cellValue = user[columnKey];
       switch (columnKey) {
-        case "ccNumber":
-          return user.identification.number;
-        case "card_id":
-          return user.default_card;
         case "actions":
           return (
             <div className={"flex flex-row gap-1"}>
               <Button color={"secondary"} variant={"bordered"}>
-                <Link href={`/admin/users/${user.id}`}>Ver más</Link>
+                <Link href={`/admin/users/${user._id}`}>Ver más</Link>
               </Button>
               <Button
                 color={"danger"}
@@ -49,7 +45,7 @@ export default function UsersTable(props: any) {
                 isLoading={false}
                 onClick={() => {
                   onOpen();
-                  setUserToDelete(user.id);
+                  setUserToDelete(user._id);
                 }}
               >
                 Eliminar
@@ -64,9 +60,9 @@ export default function UsersTable(props: any) {
     [],
   );
 
-  const sendDeleteUser = async (customerId: string, onClose: any) => {
+  const sendDeleteUser = async (userId: string, onClose: any) => {
     setErrorMessage("");
-    const response = await deleteCustomer(customerId);
+    const response = await deleteUser(userId);
     if (response.fail) {
       setErrorMessage(response.message);
     }
@@ -87,7 +83,7 @@ export default function UsersTable(props: any) {
         </TableHeader>
         <TableBody items={props.users}>
           {(item: any) => (
-            <TableRow key={item.id.toString()}>
+            <TableRow key={item._id.toString()}>
               {props.columns.map((column: any) => (
                 <TableCell key={column.key}>
                   {renderCell(item, column.key)}

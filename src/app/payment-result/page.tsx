@@ -1,4 +1,9 @@
+import PoolPaymentResults from "@/app/components/client/PoolPaymentResults";
+
 export default async function (props: any) {
-  console.log(props);
-  return <div></div>;
+  return (
+    <div>
+      <PoolPaymentResults />
+    </div>
+  );
 }

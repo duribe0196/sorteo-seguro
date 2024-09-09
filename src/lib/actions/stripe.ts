@@ -57,11 +57,6 @@ export const getSubscriptionProductById = async (
   return await stripeClient.products.retrieve(subscriptionProductId);
 };
 
-export const getCustomers = async () => {
-  const customers = await stripeClient.customers.list();
-  return customers;
-};
-
 export const deleteCustomer = async (customerId: string) => {
   try {
     await stripeClient.customers.del(customerId);

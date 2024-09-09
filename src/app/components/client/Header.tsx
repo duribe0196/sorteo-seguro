@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import LoginHeader from "@/app/components/server/LoginHeader";
 
-export default function Header() {
+export default function Header(props: any) {
   const { data, status } = useSession();
   return (
     <Navbar
@@ -26,8 +26,13 @@ export default function Header() {
             <Link href={"/raffles"}>Sorteos</Link>
           </NavbarItem>
           <NavbarItem>
-            <Link href="/advices">Apuestas deportivas</Link>
+            <Link href="/advices">Comunidad gratuita</Link>
           </NavbarItem>
+          {props.subscription === "active" ? (
+            <NavbarItem>
+              <Link href="/premium">Comunidad premium</Link>
+            </NavbarItem>
+          ) : null}
         </NavbarBrand>
       </NavbarContent>
 
@@ -37,7 +42,7 @@ export default function Header() {
             <LoginHeader user={data?.user} />
             <NavbarItem>
               <Link href="/my-profile" aria-current="page">
-                Mi perfil
+                Mi perfil - {data?.user.name}
               </Link>
             </NavbarItem>
             <NavbarItem>

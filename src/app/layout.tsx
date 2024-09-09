@@ -4,6 +4,7 @@ import SessionWrapper from "./components/client/SessionWrapper";
 import Header from "@/app/components/client/Header";
 import { NextUIProvider } from "@nextui-org/system";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { getUserSubscription } from "@/lib/actions/users";
 
 export const metadata: Metadata = {
   title: "Sorteo Seguro",
@@ -15,6 +16,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const subscription = await getUserSubscription();
+
   return (
     <SessionWrapper>
       <NextUIProvider>
@@ -23,7 +26,7 @@ export default async function RootLayout({
           defaultTheme="modern-orange"
           themes={["modern-orange"]}
         >
-          <Header />
+          <Header subscription={subscription} />
           {children}
         </NextThemesProvider>
       </NextUIProvider>
